@@ -24,18 +24,32 @@ function downloadListAsTextFile(list, fileName) {
 }
 
 
+
 function App() {
-    const [cards, setCards] = useState([
-
-
-    ]);
-
+    const [cards, setCards] = useState([]);
     const [newCard, setNewCard] = useState({
-
         description: "",
     });
 
-
+    const handleFileUpload = (event) => {
+        const files = event.target.files;
+        for (let i = 0; i < files.length; i++) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                let cardIndex = cards.length > 0 ? Math.max(...cards.map((card) => card.id)) + 1 : 1
+                const text = e.target.result;
+                const lines = text.split('\n');
+                const filelst = lines.map(line => {
+                    cardIndex= cardIndex + 1;
+                    return {
+                        id: cardIndex,
+                        description: line
+                    };
+                });
+                setCards([...cards, ...filelst]);
+            };
+            reader.readAsText(files[i]);
+        }}
 
     const handleDownloadClick = (event) =>{
         const myList = cards.map((card) => card.description);
@@ -93,6 +107,7 @@ function App() {
         </div>
             <div className={"card-grid"} >
                 <button  onClick={handleDownloadClick}>Download List</button>
+                <input type="file" onChange={handleFileUpload} multiple />
             </div>
 
         </div>
