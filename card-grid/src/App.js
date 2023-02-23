@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import "./App.css";
 
 function downloadListAsTextFile(list, fileName) {
@@ -30,6 +31,8 @@ function App() {
     const [newCard, setNewCard] = useState({
         description: "",
     });
+
+
 
     const handleFileUpload = (event) => {
         const files = event.target.files;
@@ -63,6 +66,7 @@ function App() {
     };
 
     const handleSubmit = (event) => {
+        console.log('submit triggered')
         event.preventDefault();
         setCards([
             ...cards,
@@ -76,10 +80,16 @@ function App() {
         setNewCard({ description: "" });
     };
 
+    const handleKeyPress = (event) => {
+
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+              handleSubmit(event);
+        }}
+
     const handleDelete = (id) => {
         setCards(cards.filter((card) => card.id !== id));
     };
-
     return (
         <div>
             <div className="card-grid">
@@ -91,8 +101,13 @@ function App() {
                         <textarea className='card'
                             value={newCard.description}
                             onChange={handleDescriptionChange}
+
+                                  onKeyPress={handleKeyPress}
+
                         />
+
                     </label>
+
                     <button type="submit">Add</button>
                 </form>
             </div>
@@ -106,7 +121,7 @@ function App() {
             ))}
         </div>
             <div className={"card-grid"} >
-                <button  onClick={handleDownloadClick}>Download List</button>
+                <button  onClick={handleDownloadClick} style={{ marginRight: '1em' }}>Download List</button>
                 <input type="file" onChange={handleFileUpload} multiple />
             </div>
 
